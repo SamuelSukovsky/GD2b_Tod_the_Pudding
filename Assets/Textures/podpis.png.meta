@@ -105,7 +105,28 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: podpis_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 499
+        height: 499
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4ffe06d9f4b31a4ca0c6283e72c73e5
+      internalID: -4611339364750256588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -118,9 +139,6 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       podpis_0: -4611339364750256588
-      podpis_1: -6564465652694606034
-      podpis_2: -2569216454769206104
-      podpis_3: 6507857520470577911
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

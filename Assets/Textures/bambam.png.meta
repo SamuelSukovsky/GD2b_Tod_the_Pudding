@@ -99,7 +99,28 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: bambam_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 99
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa3c4e3399d8bfe4db8d713603a8eb39
+      internalID: -6567838323654819798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -112,7 +133,6 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       bambam_0: -6567838323654819798
-      bambam_1: -5149677458209474117
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
