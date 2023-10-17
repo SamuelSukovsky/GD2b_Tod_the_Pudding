@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 4f;
+    public float speed = 400f;
     public Vector2 dir;
     private Rigidbody2D body;
     private Animator anim;
@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
+        body.AddForce(dir * speed);
     }
 
     void AccelerateX(InputAction.CallbackContext context)
