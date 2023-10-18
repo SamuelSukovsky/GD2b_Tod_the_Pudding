@@ -10,8 +10,11 @@ public class PlayerController : MonoBehaviour
     public float dash = 40f;
     public float dashCooldown = 5f;
     private float dashRecharge = 0f;
+    public float velocity;
     public Vector2 dir;
     public bool stationary = true;
+    public Camera cam;
+    private float defaultZoom;
     private Rigidbody2D body;
     private Animator anim;
 
@@ -19,6 +22,7 @@ public class PlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        defaultZoom = cam.orthographicSize;
         PlayerInput input = GetComponent<PlayerInput>();
         input.actions["AD"].started += AccelerateX;
         input.actions["AD"].canceled += AccelerateX;
@@ -32,8 +36,16 @@ public class PlayerController : MonoBehaviour
         if (!stationary)
         {
             body.AddForce(dir * speed);
-            
-            if (body.velocityX * body.velocityX + body.velocityY * body.velocityY < 1)
+            velocity = Mathf.Sqrt(body.velocityX * body.velocityX + body.velocityY * body.velocityY);
+            if (velocity > defaultZoom)
+            {
+                cam.orthographicSize = velocity;
+            }
+            else
+            {
+                cam.orthographicSize = defaultZoom;
+            }
+            if (velocity < 1f)
             {
                 stationary = true;
                 body.velocityX = 0f;
