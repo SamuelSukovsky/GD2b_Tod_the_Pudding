@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     public float speed = 4f;
     public float dash = 40f;
+    public float dashCooldown = 5f;
+    private float dashRecharge = 0f;
     public Vector2 dir;
     public bool stationary = true;
     private Rigidbody2D body;
@@ -38,6 +40,10 @@ public class PlayerController : MonoBehaviour
                 body.velocityY = 0f;
                 Debug.Log(body.velocityX * body.velocityX + body.velocityY * body.velocityY + "F");
             }
+        }
+        if (dashRecharge > 0f)
+        {
+            dashRecharge -= Time.deltaTime;
         }
     }
 
@@ -77,7 +83,11 @@ public class PlayerController : MonoBehaviour
 
     void Dash(InputAction.CallbackContext context)
     {
-        stationary = false;
-        body.velocity = body.velocity + dir * dash;
+        if (dashRecharge <= 0f)
+        {
+            stationary = false;
+            body.velocity = body.velocity + dir * dash;
+            dashRecharge = dashCooldown;
+        }
     }
 }

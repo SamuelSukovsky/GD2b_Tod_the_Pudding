@@ -222,6 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 30
   dash: 30
+  dashCooldown: 3
   dir: {x: 0, y: 0}
   stationary: 1
 --- !u!50 &511541457
