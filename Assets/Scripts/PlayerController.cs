@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     void Awake()                                        // On awake
     {
         body = GetComponent<Rigidbody2D>();                 // Get components
-        anim = GetComponent<Animator>();
+        anim = sprite.GetComponent<Animator>();
         defaultZoom = cam.orthographicSize;
         PlayerInput input = GetComponent<PlayerInput>();
 
@@ -48,16 +48,19 @@ public class PlayerController : MonoBehaviour
             if (velocity < 2f && dashCooldown != dashRecharge)  // If the player is moving very slow and they didn't just dash
             {
                 stationary = true;                                  // Make the player stationary
+                anim.SetBool("Moving", false);
                 velocity = 0;
                 body.velocityX = 0f;
                 body.velocityY = 0f;
-                Debug.Log(body.velocityX * body.velocityX + body.velocityY * body.velocityY + "F");
+                dashRecharge = 0f;
             }
-                                                                // Place aim point in the direction of movement
-            point.transform.localPosition = new Vector3(body.velocityX, body.velocityY, 0f);
+            else                                                // Else
+            {                                                       // Place aim point in the direction of movement
+                point.transform.localPosition = new Vector3(body.velocityX, body.velocityY, 0f);
+            }
         }
-        else                                                // Else
-        {                                                       // Place aim point in the direction to move in
+        else if (!dir.Equals(new Vector2(0f, 0f)))          // Else if direction has input
+        {                                                       // Place aim point in the direction
             point.transform.localPosition = new Vector3(dir.x, dir.y, 0f);
         }
         sprite.transform.right = point.transform.localPosition;
@@ -108,6 +111,7 @@ public class PlayerController : MonoBehaviour
         if (dashRecharge <= 0f)                             // If dash isn't on cooldown
         {
             stationary = false;                                 // The player isn't stationary
+            anim.SetBool("Moving", true);                       // Trigger moving animation
             body.AddForce(dir * dash);                          // Add force in target direction
             dashRecharge = dashCooldown;                        // Put dash on cooldown
         }
