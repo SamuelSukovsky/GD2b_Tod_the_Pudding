@@ -37,15 +37,9 @@ public class PlayerController : MonoBehaviour
         {
             body.AddForce(dir * speed);
             velocity = Mathf.Sqrt(body.velocityX * body.velocityX + body.velocityY * body.velocityY);
-            if (velocity > defaultZoom)
-            {
-                cam.orthographicSize = velocity;
-            }
-            else
-            {
-                cam.orthographicSize = defaultZoom;
-            }
-            if (velocity < 1f)
+            cam.transform.position = transform.position + new Vector3(0f, 0f, -1f);
+            cam.orthographicSize = 16 + Mathf.Sqrt(velocity);
+            if (velocity < 2f && dashCooldown != dashRecharge)
             {
                 stationary = true;
                 body.velocityX = 0f;
@@ -98,7 +92,7 @@ public class PlayerController : MonoBehaviour
         if (dashRecharge <= 0f)
         {
             stationary = false;
-            body.velocity = body.velocity + dir * dash;
+            body.AddForce(dir * dash);
             dashRecharge = dashCooldown;
         }
     }
