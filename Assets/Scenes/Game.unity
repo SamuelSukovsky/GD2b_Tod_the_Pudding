@@ -306,6 +306,7 @@ MonoBehaviour:
   dashCooldown: 3
   cam: {fileID: 2109711815}
   sprite: {fileID: 427646770}
+  point: {fileID: 1545311677}
   velocity: 0
   dir: {x: 0, y: 0}
   stationary: 1
@@ -413,7 +414,7 @@ Animator:
   m_GameObject: {fileID: 511541453}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 11454b4935e83d84ba9378c30e295015, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
