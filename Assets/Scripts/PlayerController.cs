@@ -6,63 +6,79 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 4f;
+    public float speed = 4f;                            // Publicly set variables
     public float dash = 40f;
     public float dashCooldown = 5f;
     private float dashRecharge = 0f;
-    public float velocity;
+    public Camera cam;
+    public GameObject sprite;
+    public GameObject point;
+
+    public float velocity;                              // Internal variables, public for debug purposes
     public Vector2 dir;
     public bool stationary = true;
-    public Camera cam;
-    private float defaultZoom;
+
+    private float defaultZoom;                          // Private variables
     private Rigidbody2D body;
     private Animator anim;
 
-    void Awake()
+    void Awake()                                        // On awake
     {
-        body = GetComponent<Rigidbody2D>();
+        body = GetComponent<Rigidbody2D>();                 // Get components
         anim = GetComponent<Animator>();
         defaultZoom = cam.orthographicSize;
         PlayerInput input = GetComponent<PlayerInput>();
-        input.actions["AD"].started += AccelerateX;
+
+        input.actions["AD"].started += AccelerateX;         // Assign functions to key binds
         input.actions["AD"].canceled += AccelerateX;
         input.actions["WS"].started += AccelerateY;
         input.actions["WS"].canceled += AccelerateY;
         input.actions["Space"].started += Dash;
     }
 
-    void FixedUpdate()
+    void FixedUpdate()                                  // On every frame
     {
-        if (!stationary)
+        if (!stationary)                                    // If the player isn't stationary
         {
-            body.AddForce(dir * speed);
+            body.AddForce(dir * speed);                         // Add force
+                                                                // Calculate velocity and move camera
             velocity = Mathf.Sqrt(body.velocityX * body.velocityX + body.velocityY * body.velocityY);
-            cam.transform.position = transform.position + new Vector3(0f, 0f, -1f);
-            cam.orthographicSize = 16 + Mathf.Sqrt(velocity);
-            if (velocity < 2f && dashCooldown != dashRecharge)
+            cam.orthographicSize = defaultZoom + Mathf.Sqrt(velocity);
+
+            if (velocity < 2f && dashCooldown != dashRecharge)  // If the player is moving very slow and they didn't just dash
             {
-                stationary = true;
+                stationary = true;                                  // Make the player stationary
+                velocity = 0;
                 body.velocityX = 0f;
                 body.velocityY = 0f;
                 Debug.Log(body.velocityX * body.velocityX + body.velocityY * body.velocityY + "F");
             }
+                                                                // Place aim point in the direction of movement
+            point.transform.localPosition = new Vector3(body.velocityX, body.velocityY, 0f);
         }
-        if (dashRecharge > 0f)
+        else                                                // Else
+        {                                                       // Place aim point in the direction to move in
+            point.transform.localPosition = new Vector3(dir.x, dir.y, 0f);
+        }
+        sprite.transform.right = point.transform.localPosition;
+
+        if (dashRecharge > 0f)                              // If dash is on cooldown
         {
-            dashRecharge -= Time.deltaTime;
+            dashRecharge -= Time.deltaTime;                     // Countdown dash cooldown
         }
     }
 
+    // Accelerate functions
     void AccelerateX(InputAction.CallbackContext context)
     {
-        dir.x = context.ReadValue<float>();
-        if (dir.x != 0f && dir.y != 0f)
-        {
+        dir.x = context.ReadValue<float>();                 // Set the x direction to x axis input value
+        if (dir.x != 0f && dir.y != 0f)                     // If direction is diagonal
+        {                                                       // Calculate the direction values
             dir.Set(Mathf.Sqrt(.5f) * dir.x, Mathf.Sqrt(.5f) * dir.y);
         }
-        else if (Mathf.Abs(dir.y) < 1f && dir.y != 0f)
+        else if (dir.y != 0f)                               // Else if y direction is not zero
         {
-            if (dir.y > 0f)
+            if (dir.y > 0f)                                     // Reset y direction to full
             {
                 dir.y = 1f;
             }
@@ -72,14 +88,14 @@ public class PlayerController : MonoBehaviour
 
     void AccelerateY(InputAction.CallbackContext context)
     {
-        dir.y = context.ReadValue<float>();
-        if (dir.y != 0f && dir.x != 0f)
-        {
+        dir.y = context.ReadValue<float>();                 // Set the y direction to y axis input value
+        if (dir.y != 0f && dir.x != 0f)                     // If direction is diagonal
+        {                                                       // Calculate the direction values
             dir.Set(Mathf.Sqrt(.5f) * dir.x, Mathf.Sqrt(.5f) * dir.y);
         }
-        else if (Mathf.Abs(dir.x) < 1f && dir.x != 0f)
+        else if (dir.x != 0f)                               // Else if x direction is not zero
         {
-            if (dir.x > 0f)
+            if (dir.x > 0f)                                     // Reset x direction to full
             {
                 dir.x = 1f;
             }
@@ -87,13 +103,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Dash(InputAction.CallbackContext context)
+    void Dash(InputAction.CallbackContext context)      // Dash Function
     {
-        if (dashRecharge <= 0f)
+        if (dashRecharge <= 0f)                             // If dash isn't on cooldown
         {
-            stationary = false;
-            body.AddForce(dir * dash);
-            dashRecharge = dashCooldown;
+            stationary = false;                                 // The player isn't stationary
+            body.AddForce(dir * dash);                          // Add force in target direction
+            dashRecharge = dashCooldown;                        // Put dash on cooldown
         }
     }
 }
