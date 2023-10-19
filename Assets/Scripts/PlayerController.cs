@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Camera cam;
     public GameObject sprite;
     public GameObject point;
+    public GameObject projectile;
 
     public float velocity;                              // Internal variables, public for debug purposes
     public Vector2 dir;
@@ -115,5 +116,10 @@ public class PlayerController : MonoBehaviour
             body.AddForce(dir * dash);                          // Add force in target direction
             dashRecharge = dashCooldown;                        // Put dash on cooldown
         }
+    }
+
+    void Shoot(InputAction.CallbackContext context)
+    {
+        GameObject shot = Instantiate(projectile);
     }
 }

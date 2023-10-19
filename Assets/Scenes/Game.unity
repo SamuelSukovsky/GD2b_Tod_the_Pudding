@@ -329,6 +329,7 @@ MonoBehaviour:
   cam: {fileID: 2109711815}
   sprite: {fileID: 427646770}
   point: {fileID: 1545311677}
+  projectile: {fileID: 0}
   velocity: 0
   dir: {x: 0, y: 0}
   stationary: 1
