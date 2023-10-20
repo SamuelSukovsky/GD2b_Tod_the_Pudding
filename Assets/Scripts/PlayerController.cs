@@ -102,7 +102,6 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("CHARGING");
                     shootChargeup -= Time.deltaTime;
                 }
             }
@@ -110,7 +109,6 @@ public class PlayerController : MonoBehaviour
 
         if (shootRecharge > 0f)                              // If dash is on cooldown
         {
-            Debug.Log("COOLING");
             shootRecharge -= Time.deltaTime;                     // Countdown dash cooldown
         }
     }
@@ -168,16 +166,16 @@ public class PlayerController : MonoBehaviour
 
     void ToggleShooting(InputAction.CallbackContext context)
     {
-        shootChargeup = shootCharge;
         isShooting = !isShooting;
+        shootChargeup = shootCharge;
+        anim.SetBool("Charge", false);
     }
 
     void Shoot()
     {
-        anim.SetBool("Charge", false);
-        Debug.Log("SHOOT");
         anim.ResetTrigger("Shoot");
         anim.SetTrigger("Shoot");
+        anim.SetBool("Charge", false);
         GameObject shot = Instantiate(projectile, sprite.transform.position, sprite.transform.rotation);
         shot.GetComponent<Rigidbody2D>().velocity += body.velocity;
         shootRecharge = shootCooldown;
