@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private Rigidbody2D body;
+    public Rigidbody2D body;
+    public float speed;
+    public float minSpeed;
     public float damage;
 
     public void Set(Vector2 velocity, float dmg)
@@ -15,12 +17,16 @@ public class Projectile : MonoBehaviour
 
     void Awake()
     {
-        
+        body = GetComponent<Rigidbody2D>();
+        body.velocity = transform.right * speed;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        if (body.velocity.magnitude < minSpeed)
+        {
+            Destroy(gameObject);
+        }
     }
 }

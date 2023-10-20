@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,33 +10,43 @@ public class PlayerController : MonoBehaviour
 {
     public float speed = 4f;                            // Publicly set variables
     public float dash = 40f;
+    public float shootCooldown = 1f;
+    public float shootCharge = .3f;
     public float dashCooldown = 5f;
-    private float dashRecharge = 0f;
     public Camera cam;
     public GameObject sprite;
     public GameObject point;
     public GameObject projectile;
 
-    public float velocity;                              // Internal variables, public for debug purposes
-    public Vector2 dir;
+    public Vector2 dir;                                 // Internal variables, public for debug purposes
     public bool stationary = true;
+    public bool isShooting = false;
 
     private float defaultZoom;                          // Private variables
+    private float shootRecharge = 0f;
+    private float shootChargeup;
+    private float dashRecharge = 0f;
+    private Vector2 mousePosition;
     private Rigidbody2D body;
     private Animator anim;
+    private PlayerInput input;
 
     void Awake()                                        // On awake
     {
         body = GetComponent<Rigidbody2D>();                 // Get components
         anim = sprite.GetComponent<Animator>();
         defaultZoom = cam.orthographicSize;
-        PlayerInput input = GetComponent<PlayerInput>();
+        input = GetComponent<PlayerInput>();
 
         input.actions["AD"].started += AccelerateX;         // Assign functions to key binds
         input.actions["AD"].canceled += AccelerateX;
         input.actions["WS"].started += AccelerateY;
         input.actions["WS"].canceled += AccelerateY;
         input.actions["Space"].started += Dash;
+        input.actions["MousePosition"].performed += GetMousePosition;
+        input.actions["Mouseclick"].started += ToggleShooting;
+        input.actions["Mouseclick"].canceled += ToggleShooting;
+
     }
 
     void FixedUpdate()                                  // On every frame
@@ -42,15 +54,12 @@ public class PlayerController : MonoBehaviour
         if (!stationary)                                    // If the player isn't stationary
         {
             body.AddForce(dir * speed);                         // Add force
-                                                                // Calculate velocity and move camera
-            velocity = Mathf.Sqrt(body.velocityX * body.velocityX + body.velocityY * body.velocityY);
-            cam.orthographicSize = defaultZoom + Mathf.Sqrt(velocity);
-
-            if (velocity < 2f && dashCooldown != dashRecharge)  // If the player is moving very slow and they didn't just dash
+            cam.orthographicSize = defaultZoom + Mathf.Sqrt(body.velocity.magnitude);
+                                                                // If the player is moving very slow and they didn't just dash
+            if (body.velocity.magnitude < 2f && dashRecharge != dashCooldown)  
             {
                 stationary = true;                                  // Make the player stationary
                 anim.SetBool("Moving", false);
-                velocity = 0;
                 body.velocityX = 0f;
                 body.velocityY = 0f;
                 dashRecharge = 0f;
@@ -64,12 +73,51 @@ public class PlayerController : MonoBehaviour
         {                                                       // Place aim point in the direction
             point.transform.localPosition = new Vector3(dir.x, dir.y, 0f);
         }
-        sprite.transform.right = point.transform.localPosition;
 
         if (dashRecharge > 0f)                              // If dash is on cooldown
         {
             dashRecharge -= Time.deltaTime;                     // Countdown dash cooldown
         }
+    }
+
+    void Update()
+    {
+        if (!isShooting)
+        {
+            sprite.transform.right = point.transform.localPosition;
+        }
+        else
+        {
+            sprite.transform.right = (Vector2) cam.ScreenToWorldPoint(mousePosition) - (Vector2) transform.position;
+            if (shootRecharge <= 0f)
+            {
+                if (shootChargeup == shootCharge)
+                {
+                    anim.SetBool("Charge", true);
+                }
+
+                if (shootChargeup <= 0f)
+                {
+                    Shoot();
+                }
+                else
+                {
+                    Debug.Log("CHARGING");
+                    shootChargeup -= Time.deltaTime;
+                }
+            }
+        }
+
+        if (shootRecharge > 0f)                              // If dash is on cooldown
+        {
+            Debug.Log("COOLING");
+            shootRecharge -= Time.deltaTime;                     // Countdown dash cooldown
+        }
+    }
+
+    private void GetMousePosition(InputAction.CallbackContext context)
+    {
+        mousePosition = context.ReadValue<Vector2>();
     }
 
     // Accelerate functions
@@ -118,8 +166,33 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Shoot(InputAction.CallbackContext context)
+    void ToggleShooting(InputAction.CallbackContext context)
     {
-        GameObject shot = Instantiate(projectile);
+        shootChargeup = shootCharge;
+        isShooting = !isShooting;
+    }
+
+    void Shoot()
+    {
+        anim.SetBool("Charge", false);
+        Debug.Log("SHOOT");
+        anim.ResetTrigger("Shoot");
+        anim.SetTrigger("Shoot");
+        GameObject shot = Instantiate(projectile, sprite.transform.position, sprite.transform.rotation);
+        shot.GetComponent<Rigidbody2D>().velocity += body.velocity;
+        shootRecharge = shootCooldown;
+        shootChargeup = shootCharge;
+    }
+
+    void OnDestroy()                                    // On destroy (for good practice)
+    {
+        input.actions["AD"].started -= AccelerateX;         // Unassign functions from key binds
+        input.actions["AD"].canceled -= AccelerateX;
+        input.actions["WS"].started -= AccelerateY;
+        input.actions["WS"].canceled -= AccelerateY;
+        input.actions["Space"].started -= Dash;
+        input.actions["MousePosition"].performed -= GetMousePosition;
+        input.actions["Mouseclick"].started -= ToggleShooting;
+        input.actions["Mouseclick"].canceled -= ToggleShooting;
     }
 }

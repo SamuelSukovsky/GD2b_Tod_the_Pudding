@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 427646771}
   - component: {fileID: 427646772}
   - component: {fileID: 427646773}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 511541458}
   - component: {fileID: 511541457}
   - component: {fileID: 511541459}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,14 +325,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 30
   dash: 600
+  shootCooldown: 1
+  shootCharge: 1
   dashCooldown: 3
   cam: {fileID: 2109711815}
   sprite: {fileID: 427646770}
   point: {fileID: 1545311677}
-  projectile: {fileID: 0}
-  velocity: 0
+  projectile: {fileID: 5896937939792191662, guid: ee5118a524514d84684dcc78bb08d1ca,
+    type: 3}
   dir: {x: 0, y: 0}
   stationary: 1
+  isShooting: 0
 --- !u!50 &511541457
 Rigidbody2D:
   serializedVersion: 4
@@ -359,7 +362,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &511541458
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -520,7 +523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1545311678}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerAimPoint
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -14531,7 +14534,7 @@ GameObject:
   - component: {fileID: 2109711817}
   - component: {fileID: 2109711815}
   - component: {fileID: 2109711816}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
