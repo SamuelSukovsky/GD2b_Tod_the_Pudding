@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
 {
     public float health;
     public float speed;
+    public int points;
     public GameObject target;
     protected Rigidbody2D body;
     protected Animator anim;

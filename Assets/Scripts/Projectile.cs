@@ -9,12 +9,6 @@ public class Projectile : MonoBehaviour
     public float minSpeed;
     public float damage;
 
-    public void Set(Vector2 velocity, float dmg)
-    {
-        body.velocity = velocity;
-        damage = dmg;
-    }
-
     void Awake()
     {
         body = GetComponent<Rigidbody2D>();
