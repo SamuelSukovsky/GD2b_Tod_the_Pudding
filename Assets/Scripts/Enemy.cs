@@ -7,23 +7,23 @@ public class Enemy : MonoBehaviour
 {
     public float health;
     public float speed;
+    public float damage;
     public int points;
     public GameObject target;
-    protected Rigidbody2D body;
-    protected Animator anim;
+    public Rigidbody2D body;
+    public Animator anim;
 
-    protected void Activate()
+    void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
-    public void Damage(float damage)
+    public void Damage(float damageTaken)
     {
-        health -= damage;
+        health -= damageTaken;
         if (health <= 0f)
         {
-            anim.SetBool("Alive", false);
             Die();
         }
     }

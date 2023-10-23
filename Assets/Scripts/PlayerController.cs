@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public float shootCooldown = 1f;
     public float shootCharge = .3f;
     public float dashCooldown = 5f;
+    public float damage = 1f;
+    public float health = 10f;
     public Camera cam;
     public GameObject sprite;
     public GameObject point;
@@ -178,8 +180,14 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("Charge", false);
         GameObject shot = Instantiate(projectile, sprite.transform.position, sprite.transform.rotation);
         shot.GetComponent<Rigidbody2D>().velocity += body.velocity;
+        shot.GetComponent<Projectile>().damage = damage;
         shootRecharge = shootCooldown;
         shootChargeup = shootCharge;
+    }
+
+    public void Damage(float damageTaken)
+    {
+        health -= damageTaken;
     }
 
     void OnDestroy()                                    // On destroy (for good practice)

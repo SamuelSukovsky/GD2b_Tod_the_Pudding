@@ -328,6 +328,8 @@ MonoBehaviour:
   shootCooldown: 0.7
   shootCharge: 0.3
   dashCooldown: 3
+  damage: 1
+  health: 10
   cam: {fileID: 2109711815}
   sprite: {fileID: 427646770}
   point: {fileID: 1545311677}
@@ -543,14 +545,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7878428182f577449e26da0a956ce32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 3
-  countdown: 0
-  points: 2
-  pointIncrease: 3
-  spawnRadius: 10
-  player: {fileID: 511541453}
-  enemies:
-  - {fileID: 2641654460470590522, guid: 98936e30851b9104d89c7dd5b07b9991, type: 3}
+  paused: 0
+  gameOver: 0
 --- !u!4 &846112950
 Transform:
   m_ObjectHideFlags: 0
@@ -565,6 +561,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1482734218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1482734220}
+  - component: {fileID: 1482734219}
+  m_Layer: 0
+  m_Name: Wave Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1482734219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482734218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68416068dab44704a9af4965c1d41ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnRate: 5
+  points: 2
+  pointIncrease: 3
+  spawnRadius: 30
+  player: {fileID: 511541453}
+  enemies:
+  - {fileID: 2641654460470590522, guid: 98936e30851b9104d89c7dd5b07b9991, type: 3}
+--- !u!4 &1482734220
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482734218}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.16473103, y: -0.15808174, z: -18.611443}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1545311677
 GameObject:

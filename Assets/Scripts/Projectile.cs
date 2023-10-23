@@ -15,6 +15,16 @@ public class Projectile : MonoBehaviour
         body.velocity = transform.right * speed;
     }
 
+    void OnCollisionEnter2D(Collision2D context)
+    {
+        Enemy hit = context.gameObject.GetComponent<Enemy>();
+        if(hit != null)
+        {
+            hit.Damage(damage);
+        }
+        Destroy(gameObject);
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
