@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public GameObject sprite;
     public GameObject point;
     public GameObject projectile;
+    public GameManager manager;
 
     public Vector2 dir;                                 // Internal variables, public for debug purposes
     public bool stationary = true;
@@ -49,6 +50,7 @@ public class PlayerController : MonoBehaviour
         input.actions["Mouseclick"].started += ToggleShooting;
         input.actions["Mouseclick"].canceled += ToggleShooting;
 
+        input.actions["Pause"].started += TogglePause;
     }
 
     void FixedUpdate()                                  // On every frame
@@ -82,42 +84,45 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Update()
+    void Update()                                       // Every frame:
     {
-        if (!isShooting)
+        if (!manager.paused)                                // If the game isn't paused
         {
-            sprite.transform.right = point.transform.localPosition;
-        }
-        else
-        {
-            sprite.transform.right = (Vector2) cam.ScreenToWorldPoint(mousePosition) - (Vector2) transform.position;
-            if (shootRecharge <= 0f)
-            {
-                if (shootChargeup == shootCharge)
+            if (!isShooting)                                    // If the player isn't shooting
+            {                                                       // Turn in the direction of movement
+                sprite.transform.right = point.transform.localPosition;
+            }
+            else                                                // Otherwise
+            {                                                       // Look at the mouse
+                sprite.transform.right = (Vector2) cam.ScreenToWorldPoint(mousePosition) - (Vector2) transform.position;
+                if (shootRecharge <= 0f)                            // If shooting is recharged
                 {
-                    anim.SetBool("Charge", true);
-                }
-
-                if (shootChargeup <= 0f)
-                {
-                    Shoot();
-                }
-                else
-                {
-                    shootChargeup -= Time.deltaTime;
+                    if (shootChargeup == shootCharge)                   // If begining charge
+                    {
+                        anim.SetBool("Charge", true);                       // Start charge animation
+                    }
+                    
+                    if (shootChargeup <= 0f)                            // If finished charging
+                    {
+                        Shoot();                                            // Shoot
+                    }
+                    else                                                // Else
+                    {
+                        shootChargeup -= Time.deltaTime;                    // Continue charging
+                    }
                 }
             }
-        }
 
-        if (shootRecharge > 0f)                              // If dash is on cooldown
-        {
-            shootRecharge -= Time.deltaTime;                     // Countdown dash cooldown
+            if (shootRecharge > 0f)                              // If dash is on cooldown
+            {
+                shootRecharge -= Time.deltaTime;                     // Countdown dash cooldown
+            }
         }
     }
-
+    
     private void GetMousePosition(InputAction.CallbackContext context)
-    {
-        mousePosition = context.ReadValue<Vector2>();
+    {                                                   // Get mouse position
+        mousePosition = context.ReadValue<Vector2>();       // Read mouse position
     }
 
     // Accelerate functions
@@ -165,29 +170,46 @@ public class PlayerController : MonoBehaviour
             dashRecharge = dashCooldown;                        // Put dash on cooldown
         }
     }
-
+                                                        // Toggle shooting 
     void ToggleShooting(InputAction.CallbackContext context)
     {
-        isShooting = !isShooting;
-        shootChargeup = shootCharge;
-        anim.SetBool("Charge", false);
+        isShooting = !isShooting;                           // Change shooting status
+        shootChargeup = shootCharge;                        // Reset shooting charge
+        anim.SetBool("Charge", false);                      // Stop the charge animation
     }
 
-    void Shoot()
+    void Shoot()                                        // Shoot
     {
-        anim.ResetTrigger("Shoot");
-        anim.SetTrigger("Shoot");
-        anim.SetBool("Charge", false);
+        anim.ResetTrigger("Shoot");                         // Reset animation trigger
+        anim.SetTrigger("Shoot");                           // Trigger shoot animation
+        anim.SetBool("Charge", false);                      // stop charge animation
+                                                            // Instatiate new projectile and add player velocity
         GameObject shot = Instantiate(projectile, sprite.transform.position, sprite.transform.rotation);
         shot.GetComponent<Rigidbody2D>().velocity += body.velocity;
-        shot.GetComponent<Projectile>().damage = damage;
-        shootRecharge = shootCooldown;
-        shootChargeup = shootCharge;
+        shot.GetComponent<Projectile>().damage = damage;    // Give the projectile damage
+        shootRecharge = shootCooldown;                      // Reset shooting cooldown
+        shootChargeup = shootCharge;                        // Reset shooting charge
     }
 
-    public void Damage(float damageTaken)
+    public void Damage(float damageTaken)               // Take damage
     {
-        health -= damageTaken;
+        health -= damageTaken;                              // Lower health by damage value
+        if (health <= 0f)                                   // If health is zero or less
+        {
+            manager.GameOver();                                 // End game
+        }
+    }
+
+    void TogglePause(InputAction.CallbackContext context)
+    {                                                   // Pause/unpause
+        if(manager.paused)                                  // If game paused, unpause it
+        {
+            manager.ResumeGame();
+        }
+        else                                                // Else, pause it
+        {
+            manager.PauseGame();
+        }
     }
 
     void OnDestroy()                                    // On destroy (for good practice)
@@ -200,5 +222,7 @@ public class PlayerController : MonoBehaviour
         input.actions["MousePosition"].performed -= GetMousePosition;
         input.actions["Mouseclick"].started -= ToggleShooting;
         input.actions["Mouseclick"].canceled -= ToggleShooting;
+
+        input.actions["Pause"].started -= TogglePause;
     }
 }
