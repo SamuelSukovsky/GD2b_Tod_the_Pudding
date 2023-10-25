@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D body;
     private Animator anim;
     private PlayerInput input;
+    private AudioSource musicPlayer;
 
     void Awake()                                        // On awake
     {
@@ -42,6 +43,7 @@ public class PlayerController : MonoBehaviour
         anim = sprite.GetComponent<Animator>();
         defaultZoom = cam.orthographicSize;
         input = GetComponent<PlayerInput>();
+        musicPlayer = GetComponent<AudioSource>();
 
         input.actions["AD"].started += AccelerateX;         // Assign functions to key binds
         input.actions["AD"].canceled += AccelerateX;
@@ -55,9 +57,9 @@ public class PlayerController : MonoBehaviour
         input.actions["Pause"].started += TogglePause;
     }
 
-    void Start()
+    void Start()                                        // On first frame
     {
-        GameManager.instance.StartGame();
+        GameManager.instance.StartGame();                   // Start game
     }
 
     void FixedUpdate()                                  // On every frame
@@ -209,19 +211,22 @@ public class PlayerController : MonoBehaviour
         {
             anim.SetBool("Dead", true);                         // Start death animation
             UnassignControls();                                 // Remove control
+            musicPlayer.volume = .5f;                           // Lower music volume
             GameManager.instance.GameOver();                    // End game
         }
     }
 
     void TogglePause(InputAction.CallbackContext context)
     {                                                   // Pause/unpause
-        if(GameManager.instance.paused)                     // If game paused, unpause it
+        if(GameManager.instance.paused)                     // If game paused, unpause it and reset music volume
         {
             GameManager.instance.ResumeGame(panel);
+            musicPlayer.volume = 1f;
         }
-        else                                                // Else, pause it
+        else                                                // Else, pause it and lower music volume
         {
             GameManager.instance.PauseGame(panel);
+            musicPlayer.volume = .5f;
         }
     }
 

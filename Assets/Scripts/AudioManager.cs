@@ -20,11 +20,11 @@ public class AudioManager : MonoBehaviour
             return; 
         }
 
-        source = GetComponent<AudioSource>();
+        source = GetComponent<AudioSource>();       // Get audiosource on self
     }
 
-    public void PlaySound(AudioClip sound)
+    public void PlaySound(AudioClip sound)      // Play sound
     {
-        source.PlayOneShot(sound);
+        source.PlayOneShot(sound);                  // Plays the provided audio clip
     }
 }
