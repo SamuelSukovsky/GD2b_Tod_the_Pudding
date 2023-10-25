@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     public GameObject point;
     public GameObject projectile;
     public GameObject panel;
+    public AudioClip hurt;
+    public AudioClip shoot;
 
     public Vector2 dir;                                 // Internal variables, public for debug purposes
     public bool stationary = true;
@@ -51,6 +53,11 @@ public class PlayerController : MonoBehaviour
         input.actions["Mouseclick"].canceled += ToggleShooting;
 
         input.actions["Pause"].started += TogglePause;
+    }
+
+    void Start()
+    {
+        GameManager.instance.StartGame();
     }
 
     void FixedUpdate()                                  // On every frame
@@ -182,7 +189,8 @@ public class PlayerController : MonoBehaviour
     {
         anim.ResetTrigger("Shoot");                         // Reset animation trigger
         anim.SetTrigger("Shoot");                           // Trigger shoot animation
-        anim.SetBool("Charge", false);                      // stop charge animation
+        anim.SetBool("Charge", false);                      // Stop charge animation
+        AudioManager.instance.PlaySound(shoot);             // Play shoot sound
                                                             // Instatiate new projectile and add player velocity
         GameObject shot = Instantiate(projectile, sprite.transform.position, sprite.transform.rotation);
         shot.GetComponent<Rigidbody2D>().velocity += body.velocity;
@@ -196,6 +204,7 @@ public class PlayerController : MonoBehaviour
         health -= damageTaken;                              // Lower health by damage value
         anim.ResetTrigger("Hurt");                          // Reset animation trigger
         anim.SetTrigger("Hurt");                            // Trigger hurt animation
+        AudioManager.instance.PlaySound(hurt);              // Play hurt sound
         if (health <= 0f)                                   // If health is zero or less
         {
             anim.SetBool("Dead", true);                         // Start death animation

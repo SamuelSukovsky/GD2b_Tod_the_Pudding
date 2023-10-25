@@ -37,6 +37,11 @@ public class GameManager : MonoBehaviour
         panel.SetActive(false);                     // Hide pause menu
         //this is where you'd turn off your pause menu
     }
+    public void StartGame()                     // Game started
+    {
+        gameOver = false;                           // Set the game to not over
+        Time.timeScale = 1f;                        // Set timescale to zero
+    }
     public void GameOver()                      // Game over
     {
         gameOver = true;                            // Set the game to over

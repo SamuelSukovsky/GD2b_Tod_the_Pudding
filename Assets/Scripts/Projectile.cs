@@ -8,6 +8,8 @@ public class Projectile : MonoBehaviour
     public float speed;
     public float minSpeed;
     public float damage;
+    public AudioClip hitEnemy;
+    public AudioClip hitAnythingElse;
 
     void Awake()
     {
@@ -21,15 +23,17 @@ public class Projectile : MonoBehaviour
         if(hit != null)
         {
             hit.Damage(damage);
+            AudioManager.instance.PlaySound(hitEnemy);
         }
+        else AudioManager.instance.PlaySound(hitAnythingElse);
         Destroy(gameObject);
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (body.velocity.magnitude < minSpeed)
         {
+            AudioManager.instance.PlaySound(hitAnythingElse);
             Destroy(gameObject);
         }
     }
