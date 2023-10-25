@@ -7,23 +7,23 @@ using UnityEngine.SceneManagement;
 
 public class ButtonScript : MonoBehaviour
 {
-    public String sceneName;
+    [SerializeField] private String context;                // Context assigned
     
-    void Awake()
-    {
-        GetComponent<Button>().onClick.AddListener(ChangeScene);
+    void Awake()                                            // Before first frame
+    {                                                           // Add button press trigger
+        GetComponent<Button>().onClick.AddListener(ButtonPressed);
     }
 
-    public void ChangeScene()
+    public void ButtonPressed()                             // On button pressed
     {
-        if(sceneName.Equals("Quit"))
+        if(context.Equals("Quit"))                              // If the context is Quit
         {
-            Application.Quit();
+            Application.Quit();                                     // Quit application
         }
-        else if (sceneName.Equals("Resume"))
-        {
+        else if (context.Equals("Resume"))                      // Else if the context is Resume 
+        {                                                           // Unpause the game
             GameManager.instance.ResumeGame(transform.parent.gameObject);
         }
-        else SceneManager.LoadScene(sceneName);
+        else SceneManager.LoadScene(context);                   // Else load the scene with the name in context
     }
 }

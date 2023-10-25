@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 4f;                            // Publicly set variables
+    public float speed = 4f;                                // Publicly set variables
     public float dash = 40f;
     public float shootCooldown = 1f;
     public float shootCharge = .3f;
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()                                       // Every frame:
     {
-        if (!GameManager.instance.paused)                                // If the game isn't paused
+        if (!GameManager.instance.paused)                       // If the game isn't paused
         {
             if (!isShooting)                                    // If the player isn't shooting
             {                                                       // Turn in the direction of movement
@@ -194,15 +194,19 @@ public class PlayerController : MonoBehaviour
     public void Damage(float damageTaken)               // Take damage
     {
         health -= damageTaken;                              // Lower health by damage value
+        anim.ResetTrigger("Hurt");                          // Reset animation trigger
+        anim.SetTrigger("Hurt");                            // Trigger hurt animation
         if (health <= 0f)                                   // If health is zero or less
         {
-            GameManager.instance.GameOver();                                 // End game
+            anim.SetBool("Dead", true);                         // Start death animation
+            UnassignControls();                                 // Remove control
+            GameManager.instance.GameOver();                    // End game
         }
     }
 
     void TogglePause(InputAction.CallbackContext context)
     {                                                   // Pause/unpause
-        if(GameManager.instance.paused)                                  // If game paused, unpause it
+        if(GameManager.instance.paused)                     // If game paused, unpause it
         {
             GameManager.instance.ResumeGame(panel);
         }
@@ -212,9 +216,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnDestroy()                                    // On destroy (for good practice)
+    void UnassignControls()                             // Unassign functions from key binds
     {
-        input.actions["AD"].started -= AccelerateX;         // Unassign functions from key binds
+        input.actions["AD"].started -= AccelerateX;
         input.actions["AD"].canceled -= AccelerateX;
         input.actions["WS"].started -= AccelerateY;
         input.actions["WS"].canceled -= AccelerateY;
@@ -224,5 +228,9 @@ public class PlayerController : MonoBehaviour
         input.actions["Mouseclick"].canceled -= ToggleShooting;
 
         input.actions["Pause"].started -= TogglePause;
+    }
+    void OnDestroy()                                    // On destroy (for good practice)
+    {
+        UnassignControls();
     }
 }
