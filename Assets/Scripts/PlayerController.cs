@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public GameObject sprite;
     public GameObject point;
     public GameObject projectile;
-    public GameManager manager;
+    public GameObject panel;
 
     public Vector2 dir;                                 // Internal variables, public for debug purposes
     public bool stationary = true;
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()                                       // Every frame:
     {
-        if (!manager.paused)                                // If the game isn't paused
+        if (!GameManager.instance.paused)                                // If the game isn't paused
         {
             if (!isShooting)                                    // If the player isn't shooting
             {                                                       // Turn in the direction of movement
@@ -196,19 +196,19 @@ public class PlayerController : MonoBehaviour
         health -= damageTaken;                              // Lower health by damage value
         if (health <= 0f)                                   // If health is zero or less
         {
-            manager.GameOver();                                 // End game
+            GameManager.instance.GameOver();                                 // End game
         }
     }
 
     void TogglePause(InputAction.CallbackContext context)
     {                                                   // Pause/unpause
-        if(manager.paused)                                  // If game paused, unpause it
+        if(GameManager.instance.paused)                                  // If game paused, unpause it
         {
-            manager.ResumeGame();
+            GameManager.instance.ResumeGame(panel);
         }
         else                                                // Else, pause it
         {
-            manager.PauseGame();
+            GameManager.instance.PauseGame(panel);
         }
     }
 
